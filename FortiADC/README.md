@@ -43,15 +43,16 @@ En el portal de formación, introduciendo el email al que has recibido el token 
 En este primer punto, veremos como dar de alta los servidores que contienen las aplciaciones a publicar, de una forma estática y dinámica mediante conectores. Además aprendreás a publicar las aplicaciones a través de FortiADC y seleccionar los metodos y perfiles de seguridad que queremos aplicar.
 
 ### 1.1. Configuracion de los backend o Real Servers Pools.
-Para la configuración del backend de la aplicación a publicar, o Real Server Pool, sobre el que se configurarn los Virtual Servers, tenemos diferentes opciones, ya que podemos realizarlo de manera manual dando de alta las IPs de los servidores o automatizarlo usando los `External Connectors`. 
+La configuración de los servidores de backend sobre los que corre la aplicación a balancear, conocidos como Real Server Pool, son el primer paso para la publicación de una aplicación. FAD permite dos formas de despliegue:
 
-En este laboratio veremos 3 formas diferentes de realizarlo:
+- Modo Manual. Por medio del registro de las IPs de Servidores.
+- Automatizado. Por medio del uso de los `External Connectors`.
 
-- 1.1.1 Configuración de Real Server Pool de manera manual.
-- 1.1.2 Configuración de Real Server Pools con connector de AWS. 
-- 1.1.3 Configuración de Real Server Pools con connector de Kubernetes. 
+> [!IMPORTANT]
+> Para poder realizar el Laboratorio es necesario seleccionar uno de los métodos para configurar el acceso y balanceo de la apliación. Las opciones son:
+> - [Configuración de Real Server y Real Server Pool de manera manual](https://github.com/xpertsummit/xpertsummit24/tree/main/FortiADC#111-configuraci%C3%B3n-de-real-server-y-real-server-pool-de-manera-manual)
+> - [Configuración de Real Server mediante conector externo Kubernetes](https://github.com/xpertsummit/xpertsummit24/tree/main/FortiADC#112-configuraci%C3%B3n-de-real-server-mediante-conector-externo-kubernetes)
 
-Con estos pasos, tendremos creados los servidores sobre los que balanceareamos los servicios que publiquemos en el FortiADC. Con la opción manual, los servidores siempre serán los mismos, en cambio con el conector, FortiADC podrá balancear el tráfico sobre los servidores que estén desplegados en cada momento, por ejemplo, dentro de un grupo de autoescalado de AWS.  
 
 #### 1.1.1 Configuración de Real Server y Real Server Pool de manera manual.
 
