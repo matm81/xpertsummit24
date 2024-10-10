@@ -40,18 +40,18 @@ En el portal de formación, introduciendo el email al que has recibido el token 
 >  Si realizarais el despliegue usando una imagen de Marketplace de AWS, si sería necesario realizar el reseteo de contraseña, usando el ID de la instancia.
 
 ## 1. Publicación de aplicaciones y configuración básica. 
-En este primer punto, veremos como dar de alta los servidores que contienen las aplciaciones a publicar, de una forma estática y dinámica mediante conectores. Además aprendreás a publicar las aplicaciones a través de FortiADC y seleccionar los metodos y perfiles de seguridad que queremos aplicar.
+En este primer punto, veremos como dar de alta los servidores que contienen las aplciaciones a publicar, de una forma estática o dinámica mediante conectores. Además aprendreás a publicar las aplicaciones a través de FortiADC.
 
-### 1.1. Configuracion de los backend o Real Servers Pools.
-Para la configuración del backend de la aplicación a publicar, o Real Server Pool, sobre el que se configurarn los Virtual Servers, tenemos diferentes opciones, ya que podemos realizarlo de manera manual dando de alta las IPs de los servidores o automatizarlo usando los `External Connectors`. 
+### 1.1. Configuracion Real Servers Pools.
+El Real Server Pool es el conjunto de servidores de Backend que contienen el servicio a publicar por medio de los Virtual Server. En este apartado aprenderemos a configurarlos dando la opción de hacerlo de manera manual o automatizada por medio de los conectores.
 
-En este laboratio veremos 3 formas diferentes de realizarlo:
 
-- 1.1.1 Configuración de Real Server Pool de manera manual.
-- 1.1.2 Configuración de Real Server Pools con connector de AWS. 
-- 1.1.3 Configuración de Real Server Pools con connector de Kubernetes. 
-
-Con estos pasos, tendremos creados los servidores sobre los que balanceareamos los servicios que publiquemos en el FortiADC. Con la opción manual, los servidores siempre serán los mismos, en cambio con el conector, FortiADC podrá balancear el tráfico sobre los servidores que estén desplegados en cada momento, por ejemplo, dentro de un grupo de autoescalado de AWS.  
+> [!IMPORTANT]
+> Seleccionar ***un método*** de configuración de los Real Server Pool:
+>
+> - [Método manual](https://github.com/xpertsummit/xpertsummit24/tree/main/FortiADC#111-configuraci%C3%B3n-de-real-server-y-real-server-pool-de-manera-manual). Despliegue de toda la infraestructura por medio de la configuración habitual de los recursos.
+> - [Método Automático por medio de conector de AWS](https://github.com/xpertsummit/xpertsummit24/tree/main/FortiADC#113-configuraci%C3%B3n-de-real-server-mediante-conector-externo-aws). Despliegue de la infraestructura de manera automática cuando los servidores de Backend está alojados en AWS.
+> - [Método Automático por medio de conector de Kubernetes](https://github.com/xpertsummit/xpertsummit24/tree/main/FortiADC#112-configuraci%C3%B3n-de-real-server-mediante-conector-externo-kubernetes). Despliegue de la infraestructura de manera automática cuando los servidores de Backend está alojados en Kubernetes.  
 
 #### 1.1.1 Configuración de Real Server y Real Server Pool de manera manual.
 
@@ -61,10 +61,10 @@ En el panel lateral, ve a ***Server Load Balance > Real Servers Pool > Real Serv
 <p align="center"><img src="images/image1-1-1-1.png" width="70%" align="center"></p>
 
 Configura los siguientes valores:
-* Name: RS_manual
-* Server Type: Selecciona Static.
-* Status: Selecciona Enable.
-* Type: Selecciona IP
+* Name: ***RS_manual***
+* Server Type: Selecciona ***Static***.
+* Status: Selecciona ***Enable***.
+* Type: Selecciona ***IP***
 * Address: `IP de tu servidor`
 
 > [!NOTE]
@@ -78,11 +78,11 @@ Ahora crearemos el Real Server Pool que incluirá el *Real Server* que acabamos 
 En el panel lateral, ve a ***Server Load Balance > Real Servers Pool*** y haz clic en ***Create New*** para agregar un nuevo servidor.
 
 Configura los siguientes valores:
-* Name: RSP_manual_DVWA
-* Address Type: IPv4.
-* Type: Static
-* Health Check: (Enable)
-* Health Check List: (Selecciona LB_HLTHCH_ICMP y añadelo a la columna Seletecd Items)
+* Name: ***RSP_manual_DVWA***
+* Address Type: ***IPv4***.
+* Type: ***Static***
+* Health Check: ***Enable***
+* Health Check List: Selecciona ***LB_HLTHCH_ICMP*** y añadelo a la columna Seletecd Items
 
 <p align="center"><img src="images/image1-1-1-3.png" width="70%" align="center"></p>
 
@@ -93,11 +93,11 @@ Selecciona el *Real Server Pool* que acabamos de crear y haz doble click o dale 
 En la sección ***Member*** añade el Real Server creado en el paso 1. 
 
 Configura los siguientes valores:
-* Status: Enable
-* Real Server: (selecciona el Real Server creado)
-* Port: 31000
-* Health Check Inherit: (Enable)
-* RS Profile Inherit: (Enable)
+* Status: ***Enable***
+* Real Server: selecciona el Real Server creado
+* Port: ***31000***
+* Health Check Inherit: ***Enable***
+* RS Profile Inherit: ***Enable***
 
 <p align="center"><img src="images/image1-1-1-4.png" width="70%" align="center"></p>
 
@@ -106,11 +106,11 @@ Finalmente guardaremos la configuración de nuestro *Real Server Pool* `RSP_manu
 Repiteremos estos pasos para crear un nuevo *Real Server Pool* pero para la aplicación de API llamado `RSP_manual_API` y añadiremos un nuevo miembro una vez configurado pero cambiando el puerto de la aplicación al `31001`
 
 Configura los siguientes valores cuando añadas el nuevo miembre a `RSP_manual_API`
-* Status: Enable
-* Real Server: (selecciona el Real Server creado)
-* Port: `31001`
-* Health Check Inherit: (Enable)
-* RS Profile Inherit: (Enable)
+* Status: ***Enable***
+* Real Server: selecciona el Real Server creado
+* Port: ***31001***
+* Health Check Inherit: ***Enable***
+* RS Profile Inherit: ***Enable***
 
 > [!NOTE]
 >  Para la configuración de este laboratorio, habrás observado que el *Real Server* que se añade al *Real Server Pool* es el mismo en ambos casos, correspondiente al nodo de Kubernetes donde corren las dos aplicaciones. El puerto donde se escuchan las aplicaciones corresponde a un servicio tipo Nodeport en el nodo. Algo más común que te podrás encontrar, será tener que configurar más de un *Real Server* o como veremos en los puntos siguientes, un *Real Server* dinámico. 
@@ -128,11 +128,11 @@ En el panel lateral, ve a ***Security Fabric > External Connectors***, haz clic 
 <p align="center"><img src="images/image1-1-2-1.png" width="70%" align="center"></p>
 
 Configurar los siguientes valores:
-* Name: SDN_K8S
-* Status: Enable
-* Update Interval: 30
+* Name: ***SDN_K8S***
+* Status: ***Enable***
+* Update Interval: ***30***
 * Server: `IP de tu servidor`
-* Port: 6443
+* Port: ***6443***
 * Secret Token: `Kubernetes connector secret token`
 
 Como siempre podrás encontrar los datos necesarios en el portal del laboratorio, recuerda que cada participante tiene los suyos, como la IP del servidor y el secret token. 
@@ -158,12 +158,12 @@ Con estos pasos ya estaría configurado el conector que lee la API de nuestro en
 El siguiente paso es crear un nuevo *Real Server Pool* que use este conector para crear de forma dinámica los *Real Severs* sobre los que se va a balancear el tráfico de la aplicación. Dirígete a ***Server Load Balance > Real Server Pool > Real Server Pool*** y haz clic en ***Create New*** para agregar un nuevo servidor.
 
 Configura los siguientes valores:
-* Name: RSP_SDN_K8S_DVWA
-* Type: Dynamic
-* SDN Connector: (Seleccionar el conector que acabamos de crear)
-* Service: (Seleccionar el servicio de la aplicación DVWA, **K8S_ServiceName=dvwa**)
-* Health Check: (Enable)
-* Health Check List: (Selecciona LB_HLTHCH_ICMP y añadelo a la columna Seletecd Items)
+* Name: ***RSP_SDN_K8S_DVWA***
+* Type: ***Dynamic***
+* SDN Connector: Seleccionar el conector que acabamos de crear
+* Service: Seleccionar el servicio de la aplicación DVWA, **K8S_ServiceName=dvwa**
+* Health Check: ***Enable***
+* Health Check List: Selecciona ***LB_HLTHCH_ICMP*** y añadelo a la columna Seletecd Items
 
 <p align="center"><img src="images/image1-1-2-5.png" width="70%" align="center"></p>
 
@@ -174,12 +174,12 @@ Tras salvar la configuración podrás comprobar como FortiADC se ha conectado de
 Vuelve a configurar un nuevo *Real Server Pool* para la aplicación de API, los datos serían los mismos que en paso anterior, lo único que debes cambiar es el nombre y seleccionar el servicio 
 
 Configura los siguientes valores:
-* Name: RSP_sdn_k8s_API
-* Type: Dynamic
-* SDN Connector: (Seleccionar el conector que acabamos de crear)
-* Service: (Seleccionar el servicio de la aplicación DVWA, **K8S_ServiceName=swiagger-petstore**)
-* Health Check: (Enable)
-* Health Check List: (Selecciona LB_HLTHCH_ICMP y añadelo a la columna Seletecd Items)
+* Name: ***RSP_sdn_k8s_API***
+* Type: ***Dynamic***
+* SDN Connector: Seleccionar el conector que acabamos de crear
+* Service: Seleccionar el servicio de la aplicación DVWA, **K8S_ServiceName=swiagger-petstore**
+* Health Check: ***Enable***
+* Health Check List: Selecciona ***LB_HLTHCH_ICMP*** y añadelo a la columna Seletecd Items
 
 <p align="center"><img src="images/image1-1-2-7.png" width="70%" align="center"></p>
 
@@ -211,14 +211,14 @@ Dado que a tu instancia de FortiADC en AWS, le hemos asociado un [IAM Intance pr
 El siguiente paso es crear un nuevo *Real Server Pool* que use este conector para crear de forma dinámica los *Real Severs* sobre los que se va a balancear el tráfico de la aplicación. Dirígete a ***Server Load Balance > Real Server Pool > Real Server Pool*** y haz clic en ***Create New*** para agregar un nuevo servidor.
 
 Configura los siguientes valores:
-* Name: RSP_SDN_AWS_DVWA
-* Type: Dynamic
-* SDN Connector: (Seleccionar el conector SDN_AWS)
-* Service: (Seleccionar como filtro el tag: Tag.Owner=`<usuario_laboratorio>`)
+* Name: ***RSP_SDN_AWS_DVWA***
+* Type: ***Dynamic***
+* SDN Connector: Seleccionar el conector ***SDN_AWS***
+* Service: Seleccionar como filtro el tag: Tag.Owner=`<usuario_laboratorio>`
 * Service Port: `31000`
-* IP Address Type: Private
-* Health Check: (Enable)
-* Health Check List: (Selecciona LB_HLTHCH_ICMP y añadelo a la columna Seletecd Items)
+* IP Address Type: ***Private***
+* Health Check: ***Enable***
+* Health Check List: Selecciona ***LB_HLTHCH_ICMP*** y añadelo a la columna Seletecd Items
 
 <p align="center"><img src="images/image1-1-3-4.png" width="70%" align="center"></p>
 
@@ -228,14 +228,14 @@ Configura los siguientes valores:
 Vuelve a configurar un nuevo *Real Server Pool* para la aplicación de API, los datos serían los mismos que en paso anterior, lo único que debes cambiar es el nombre y seleccionar el servicio 
 
 Configura los siguientes valores:
-* Name: RSP_SDN_AWS_API
-* Type: Dynamic
-* SDN Connector: (Seleccionar el conector que acabamos de crear)
-* Service: (Seleccionar como filtro el tag: Tag.Owner=`<usuario_laboratorio>`)
+* Name: ***RSP_SDN_AWS_API***
+* Type: ***Dynamic***
+* SDN Connector: Seleccionar el conector que acabamos de crear
+* Service: Seleccionar como filtro el tag: Tag.Owner=`<usuario_laboratorio>`
 * Service Port: `31001`
-* IP Address Type: Private
-* Health Check: (Enable)
-* Health Check List: (Selecciona LB_HLTHCH_ICMP y añadelo a la columna Seletecd Items)
+* IP Address Type: ***Private***
+* Health Check: ***Enable***
+* Health Check List: Selecciona ***LB_HLTHCH_ICMP*** y añadelo a la columna Seletecd Items
 
 <p align="center"><img src="images/image1-1-3-5.png" width="70%" align="center"></p>
 
